@@ -6,9 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
+// --- IMPORTAÇÕES DO FIREBASE ---
+import { db } from "../firebaseConfig"; // Ajuste o caminho se seu arquivo estiver em outra pasta
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+
 const Cadastro = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [loading, setLoading] = useState(false); // Estado para o botão de carregar
   const [form, setForm] = useState({
     nome: "",
     cpf: "",
@@ -37,8 +42,10 @@ const Cadastro = () => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validações originais
     const cpfClean = form.cpf.replace(/\D/g, "");
     if (cpfClean.length !== 11) {
       toast({ title: "CPF inválido", description: "Digite um CPF com 11 dígitos.", variant: "destructive" });
@@ -48,9 +55,38 @@ const Cadastro = () => {
       toast({ title: "E-mail inválido", variant: "destructive" });
       return;
     }
-    // Save to localStorage for demo
-    localStorage.setItem("m23_member", JSON.stringify({ ...form, associadoEm: new Date().toISOString(), ativo: true }));
-    navigate("/pagamento");
+
+    setLoading(true);
+
+    try {
+      // --- SALVAMENTO REAL NO FIREBASE ---
+      const docRef = await addDoc(collection(db, "socios"), {
+        ...form,
+        cpfLimpo: cpfClean,
+        status: "pendente",
+        ativo: false,
+        criadoEm: serverTimestamp(),
+      });
+
+      // Salva no localStorage apenas para controle da sessão atual, se precisar
+      localStorage.setItem("m23_member_id", docRef.id);
+      
+      toast({
+        title: "Cadastro realizado!",
+        description: "Seus dados foram salvos. Vamos para o pagamento.",
+      });
+
+      navigate("/pagamento");
+    } catch (error) {
+      console.error("Erro ao salvar:", error);
+      toast({
+        title: "Erro no servidor",
+        description: "Não foi possível salvar seus dados. Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -78,6 +114,7 @@ const Cadastro = () => {
                 required
                 placeholder="Seu nome completo"
                 className="mt-1"
+                disabled={loading}
               />
             </div>
             <div>
@@ -89,6 +126,7 @@ const Cadastro = () => {
                 required
                 placeholder="000.000.000-00"
                 className="mt-1"
+                disabled={loading}
               />
             </div>
             <div>
@@ -101,6 +139,7 @@ const Cadastro = () => {
                 required
                 placeholder="seu@email.com"
                 className="mt-1"
+                disabled={loading}
               />
             </div>
             <div>
@@ -112,6 +151,7 @@ const Cadastro = () => {
                 required
                 placeholder="(48) 99999-9999"
                 className="mt-1"
+                disabled={loading}
               />
             </div>
             <div>
@@ -123,14 +163,16 @@ const Cadastro = () => {
                 onChange={(e) => handleChange("nascimento", e.target.value)}
                 required
                 className="mt-1"
+                disabled={loading}
               />
             </div>
 
             <Button
               type="submit"
+              disabled={loading}
               className="w-full bg-secondary text-secondary-foreground font-display uppercase tracking-wider text-lg py-6 hover:brightness-110"
             >
-              Continuar para Pagamento
+              {loading ? "Processando..." : "Continuar para Pagamento"}
             </Button>
           </form>
         </motion.div>
