@@ -1,8 +1,15 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Users, Ticket, ShieldCheck, Newspaper } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Users, Ticket, ShieldCheck, Newspaper, Camera, ChevronLeft, ChevronRight } from "lucide-react";
+
+// Imports das imagens
 import heroBg from "@/assets/hero-bg.jpeg";
 import logo from "@/assets/logo.jpeg";
+import foto1 from "@/assets/galeria1.jpg";
+import foto2 from "@/assets/galeria2.jpg";
+import foto3 from "@/assets/galeria3.jpg";
+import foto4 from "@/assets/galeria4.jpg";
 
 const features = [
   { icon: Users, title: "Comunidade", desc: "Faça parte de uma família que vive e respira Avaí." },
@@ -12,97 +19,149 @@ const features = [
 ];
 
 const Index = () => {
+  const galeriaFotos = [foto1, foto2, foto3, foto4];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev === galeriaFotos.length - 1 ? 0 : prev + 1));
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev === 0 ? galeriaFotos.length - 1 : prev - 1));
+  };
+
   return (
-    <div className="flex flex-col min-h-screen">
-      {/* Hero */}
-      <section className="relative overflow-hidden min-h-[80vh] flex items-center">
+    <div className="flex flex-col min-h-screen bg-white font-sans">
+      {/* 1. HERO SECTION */}
+      <section className="relative overflow-hidden min-h-[85vh] flex items-center border-b-8 border-[#0046BE]">
         <div className="absolute inset-0">
-          <img src={heroBg} alt="Movimento 23 background" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 hero-gradient opacity-85" />
+          <img src={heroBg} alt="Ressacada" className="w-full h-full object-cover grayscale-[0.5]" />
+          <div className="absolute inset-0 bg-[#0046BE]/70 mix-blend-multiply" />
         </div>
-        <div className="relative container mx-auto px-4 py-20 text-center">
+        
+        <div className="relative container mx-auto px-4 py-20 text-center text-white">
           <motion.img
             src={logo}
             alt="Movimento 23"
-            className="mx-auto h-40 w-40 rounded-full object-cover mb-8 border-4 border-accent animate-pulse-glow"
+            className="mx-auto h-44 w-44 rounded-full object-cover mb-8 border-4 border-white shadow-xl"
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6 }}
           />
-          <motion.h1
-            className="font-display text-5xl md:text-7xl font-bold uppercase text-primary-foreground mb-4"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-          >
+          <h1 className="text-6xl md:text-8xl font-black uppercase italic tracking-tighter mb-4">
             Movimento 23
-          </motion.h1>
-          <motion.p
-            className="text-lg md:text-xl text-primary-foreground/80 mb-8 max-w-2xl mx-auto"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
+          </h1>
+          <p className="text-xl md:text-2xl font-light mb-10 uppercase tracking-[0.2em]">
+            A essência da arquibancada.
+          </p>
+          <Link
+            to="/cadastro"
+            className="inline-block bg-white text-[#0046BE] text-xl font-bold uppercase px-12 py-5 shadow-2xl hover:bg-zinc-100 transition-all"
           >
-            A torcida que não para! Unidos pela paixão ao Avaí F.C., somos a voz que ecoa nas arquibancadas.
-          </motion.p>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-          >
-            <Link
-              to="/cadastro"
-              className="inline-block bg-accent text-accent-foreground font-display text-lg uppercase tracking-wider px-8 py-4 rounded-lg hover:brightness-110 transition-all gold-glow"
-            >
-              Associe-se Agora
-            </Link>
-          </motion.div>
+            Associe-se Agora
+          </Link>
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-center uppercase mb-12 text-foreground">
-            Por que ser <span className="text-secondary">Movimento 23</span>?
+      {/* 2. NOSSA HISTÓRIA */}
+      <section className="py-24 bg-white text-[#0046BE]">
+        <div className="container mx-auto px-4 max-w-4xl text-center">
+          <h2 className="text-4xl font-black uppercase mb-10 italic underline decoration-4 underline-offset-8">
+            Nossa História
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((f, i) => (
-              <motion.div
-                key={f.title}
-                className="bg-card rounded-lg p-6 text-center blue-glow hover:scale-105 transition-transform"
-                initial={{ y: 40, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: i * 0.1, duration: 0.5 }}
-                viewport={{ once: true }}
-              >
-                <f.icon className="mx-auto h-10 w-10 text-secondary mb-4" />
-                <h3 className="font-display text-xl font-bold uppercase mb-2 text-foreground">{f.title}</h3>
-                <p className="text-muted-foreground text-sm">{f.desc}</p>
-              </motion.div>
+          <div className="space-y-6 text-xl font-medium leading-relaxed">
+            <p>
+              O Movimento 23 nasceu da paixão incondicional pelo Avaí Futebol Clube. Somos uma torcida organizada que acredita no poder da união, da raça e do amor ao manto azul e branco.
+            </p>
+            <p>
+              Desde nossa fundação, estivemos presentes nos momentos mais importantes do clube, sempre apoiando dentro e fora de campo. Nossa missão é fortalecer a torcida avaiana e ser a voz da Ressacada.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. POR QUE SER M23 */}
+      <section className="py-24 bg-zinc-50">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-black text-center uppercase mb-16 text-[#0046BE] italic">
+            Vantagens de ser M23
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((f) => (
+              <div key={f.title} className="border-2 border-[#0046BE] p-8 text-center hover:bg-[#0046BE] hover:text-white transition-all group">
+                <f.icon className="mx-auto h-12 w-12 text-[#0046BE] mb-6 group-hover:text-white" />
+                <h3 className="text-2xl font-black uppercase mb-3">{f.title}</h3>
+                <p className="text-sm font-medium opacity-80">{f.desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* História */}
-      <section className="py-20 hero-gradient">
-        <div className="container mx-auto px-4 max-w-3xl text-center">
-          <h2 className="font-display text-3xl md:text-4xl font-bold uppercase mb-8 text-primary-foreground">
-            Nossa História
-          </h2>
-          <p className="text-primary-foreground/80 leading-relaxed mb-6">
-            O Movimento 23 nasceu da paixão incondicional pelo Avaí Futebol Clube. Somos uma torcida organizada que acredita no poder da união, da raça e do amor ao manto azul e branco. Nosso nome carrega o número que representa nossa identidade — o 23, símbolo de garra e determinação.
-          </p>
-          <p className="text-primary-foreground/80 leading-relaxed mb-8">
-            Desde nossa fundação, estivemos presentes nos momentos mais importantes do clube, sempre apoiando dentro e fora de campo. Nossa missão é fortalecer a torcida avaiana e levar o nome do Leão da Ilha a todos os cantos.
-          </p>
-          <Link
-            to="/cadastro"
-            className="inline-block border-2 border-accent text-accent font-display uppercase tracking-wider px-6 py-3 rounded-lg hover:bg-accent hover:text-accent-foreground transition-all"
+      {/* 4. GALERIA (ESTILO CARROSSEL INSTAGRAM) */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center gap-3 mb-12 text-[#0046BE]">
+            <Camera className="h-8 w-8" />
+            <h2 className="text-4xl font-black uppercase italic">Nossa Pulsação</h2>
+          </div>
+
+          <div className="relative max-w-4xl mx-auto group">
+            {/* Imagem Principal */}
+            <div className="relative h-[300px] md:h-[500px] overflow-hidden rounded-sm shadow-2xl border-4 border-white">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentIndex}
+                  src={galeriaFotos[currentIndex]}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full h-full object-cover"
+                />
+              </AnimatePresence>
+
+              {/* Botões de Navegação */}
+              <button 
+                onClick={prevSlide}
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-[#0046BE] transition-colors"
+              >
+                <ChevronLeft size={32} />
+              </button>
+              <button 
+                onClick={nextSlide}
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-[#0046BE] transition-colors"
+              >
+                <ChevronRight size={32} />
+              </button>
+            </div>
+
+            {/* Indicadores (Pontinhos) */}
+            <div className="flex justify-center gap-2 mt-6">
+              {galeriaFotos.map((_, index) => (
+                <div 
+                  key={index}
+                  className={`h-2 w-2 rounded-full transition-all ${index === currentIndex ? "bg-[#0046BE] w-8" : "bg-zinc-300"}`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. MÚSICA FINAL */}
+      <section className="py-24 bg-[#0046BE] text-white">
+        <div className="container mx-auto px-4 text-center">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            className="border-t-2 border-white/20 pt-16"
           >
-            Faça Parte Dessa História
-          </Link>
+            <h3 className="text-3xl md:text-5xl font-black uppercase italic leading-tight">
+              "É o time da raça,<br/> 
+              vamos em busca da taça,<br/>
+              <span className="text-white/50">Avaí é paixão, vamo vamo Leão!"</span>
+            </h3>
+          </motion.div>
         </div>
       </section>
     </div>

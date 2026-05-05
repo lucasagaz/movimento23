@@ -24,11 +24,18 @@ const App = () => (
           <Header />
           <main className="flex-1">
             <Routes>
+              {/* Página Principal com o novo design de torcida */}
               <Route path="/" element={<Index />} />
+              
+              {/* Rotas de Fluxo do Sócio */}
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/pagamento" element={<Pagamento />} />
               <Route path="/painel" element={<Painel />} />
+              
+              {/* Painel Administrativo Oculto */}
               <Route path="/admin-m23-secreto-99" element={<Admin />} />
+              
+              {/* Rota de Erro (sempre por último) */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
