@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Cadastro from "./pages/Cadastro";
 import Pagamento from "./pages/Pagamento";
 import Painel from "./pages/Painel";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
               <Route path="/cadastro" element={<Cadastro />} />
               <Route path="/pagamento" element={<Pagamento />} />
               <Route path="/painel" element={<Painel />} />
+              <Route path="/admin-m23-secreto-99" element={<Admin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
