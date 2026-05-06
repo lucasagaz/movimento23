@@ -1,180 +1,196 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { User, CalendarDays, CheckCircle, XCircle } from "lucide-react";
-import logo from "@/assets/logo.jpeg";
-import camisetaNews from "@/assets/camiseta-news.jpeg";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  User, 
+  Download, 
+  MessageCircle, 
+  ChevronRight,
+  ShieldCheck,
+  Calendar,
+  LayoutDashboard
+} from "lucide-react";
 
-interface Member {
-  nome: string;
-  cpf: string;
-  email: string;
-  telefone: string;
-  nascimento: string;
-  associadoEm: string;
-  ativo: boolean;
-  plano?: number;
-  valorPago?: number;
-}
-
-const news = [
-  {
-    title: "Nova Camiseta Movimento 23",
-    desc: "Garanta já a camiseta oficial do Movimento 23 por apenas R$70,00!",
-    image: camisetaNews,
-  },
-  {
-    title: "Caravana para o próximo jogo",
-    desc: "Ônibus saindo de Florianópolis para a partida fora de casa. Inscreva-se!",
-    image: null,
-  },
-  {
-    title: "Assembleia Geral dos Membros",
-    desc: "Participe da próxima assembleia e tenha voz na torcida.",
-    image: null,
-  },
-];
+// IMPORTANDO AS IMAGENS CORRETAMENTE DA PASTA ASSETS
+import camisetaImg from "../assets/camiseta-news.jpeg";
+import logoImg from "../assets/logo.jpeg";
 
 const Painel = () => {
-  const [member, setMember] = useState<Member | null>(null);
-
-  useEffect(() => {
-    const data = localStorage.getItem("m23_member");
-    if (data) setMember(JSON.parse(data));
-  }, []);
-
-  if (!member) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="font-display text-2xl mb-4 text-foreground">Você ainda não é associado</h2>
-          <Link
-            to="/cadastro"
-            className="inline-block bg-secondary text-secondary-foreground font-display uppercase px-6 py-3 rounded-lg"
-          >
-            Associe-se
-          </Link>
-        </div>
-      </div>
-    );
-  }
-
-  const dataAssociacao = new Date(member.associadoEm).toLocaleDateString("pt-BR");
+  const [socio] = useState({
+    nome: "LUCAS SAGAZ DA SILVA",
+    cpf: "111.111.111-11",
+    plano: "Plano Mensal",
+    inicio: "13/04/2026",
+    status: "Ativo"
+  });
 
   return (
-    <div className="min-h-screen bg-background py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <motion.div initial={{ y: 30, opacity: 0 }} animate={{ y: 0, opacity: 1 }}>
-          <h1 className="font-display text-4xl font-bold uppercase text-center mb-8 text-foreground">
-            Meu Painel
-          </h1>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {/* Digital Card */}
-            <div className="relative overflow-hidden rounded-2xl hero-gradient p-6 min-h-[240px] flex flex-col justify-between blue-glow">
-              <img
-                src={logo}
-                alt="bg"
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 opacity-10 object-contain"
-              />
-              <div className="relative z-10">
-                <div className="flex items-center justify-between mb-6">
-                  <span className="font-display text-xs uppercase tracking-[0.2em] text-primary-foreground/60">
-                    Carteirinha Digital
-                  </span>
-                  <img src={logo} alt="Movimento 23" className="h-10 w-10 rounded-full object-cover" />
-                </div>
-                <h3 className="font-display text-2xl font-bold text-primary-foreground uppercase">
-                  {member.nome}
-                </h3>
+    <div className="min-h-screen bg-slate-50 pb-20">
+      {/* HEADER DO PAINEL */}
+      <div className="bg-secondary text-white py-12 px-4 shadow-xl">
+        <div className="max-w-6xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col md:flex-row md:items-center justify-between gap-6"
+          >
+            <div className="flex items-center gap-4">
+              <div className="bg-white/10 p-3 rounded-2xl border border-white/20">
+                <LayoutDashboard className="text-white w-8 h-8" />
               </div>
-              <div className="relative z-10 flex items-center justify-between mt-4">
+              <div>
+                <h1 className="text-3xl font-black uppercase italic tracking-tighter">
+                  Meu <span className="text-white opacity-90">Painel</span>
+                </h1>
+                <p className="text-slate-400 font-medium uppercase text-[10px] tracking-widest">Área exclusiva do associado</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 bg-white/10 p-4 rounded-2xl border border-white/20 backdrop-blur-sm">
+              <div className="bg-white rounded-full p-2">
+                <ShieldCheck className="text-secondary w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-[10px] uppercase font-bold text-slate-300 leading-none">Status</p>
+                <p className="text-lg font-black text-white uppercase italic">Sócio Ativo</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 -mt-8 grid lg:grid-cols-3 gap-8">
+        
+        {/* COLUNA ESQUERDA: CARTEIRINHA E DADOS */}
+        <div className="lg:col-span-1 space-y-6">
+          <motion.div 
+            whileHover={{ scale: 1.02 }}
+            className="relative bg-secondary rounded-[25px] p-8 shadow-[0_20px_50px_rgba(30,41,59,0.3)] overflow-hidden border-2 border-white/10"
+          >
+            <div className="absolute -right-10 -bottom-10 opacity-10 w-64 h-64 bg-white rounded-full blur-3xl" />
+            <div className="relative z-10">
+              <div className="flex justify-between items-start mb-10">
+                <div className="bg-white p-2 rounded-xl">
+                   {/* Usando a logo importada */}
+                   <img src={logoImg} alt="M23" className="w-12 h-12 object-contain" />
+                </div>
+                <Badge className="bg-white text-secondary font-black italic uppercase text-[10px] px-3">Membro 23</Badge>
+              </div>
+
+              <div className="space-y-1 mb-10">
+                <p className="text-[9px] uppercase font-bold text-white/50 tracking-[0.3em]">Nome do Sócio</p>
+                <h2 className="text-2xl font-black text-white italic tracking-tight uppercase">{socio.nome}</h2>
+              </div>
+
+              <div className="flex justify-between items-end border-t border-white/10 pt-6">
                 <div>
-                  <div className="text-primary-foreground/60 text-xs uppercase">Associado em</div>
-                  <div className="text-primary-foreground font-display">{dataAssociacao}</div>
+                  <p className="text-[9px] uppercase font-bold text-white/40 leading-none mb-1">Membro desde</p>
+                  <p className="text-sm font-bold text-white">{socio.inicio}</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  {member.ativo ? (
-                    <>
-                      <CheckCircle className="h-5 w-5 text-accent" />
-                      <span className="font-display text-sm uppercase text-accent font-bold">Ativa</span>
-                    </>
-                  ) : (
-                    <>
-                      <XCircle className="h-5 w-5 text-destructive" />
-                      <span className="font-display text-sm uppercase text-destructive font-bold">Inativa</span>
-                    </>
-                  )}
+                <div className="text-right">
+                   <p className="text-[9px] uppercase font-bold text-white/40 leading-none mb-1">Categoria</p>
+                   <p className="text-sm font-black text-white uppercase italic">{socio.plano}</p>
                 </div>
               </div>
             </div>
+          </motion.div>
 
-            {/* Member Info */}
-            <div className="bg-card rounded-lg p-6 blue-glow">
-              <h3 className="font-display text-lg uppercase mb-4 text-foreground flex items-center gap-2">
-                <User className="h-5 w-5 text-secondary" /> Meus Dados
-              </h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Nome</span>
-                  <span className="text-foreground font-medium">{member.nome}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">CPF</span>
-                  <span className="text-foreground font-medium">{member.cpf}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">E-mail</span>
-                  <span className="text-foreground font-medium">{member.email}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Telefone</span>
-                  <span className="text-foreground font-medium">{member.telefone}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Nascimento</span>
-                  <span className="text-foreground font-medium">{member.nascimento}</span>
-                </div>
-                {member.plano && (
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Plano</span>
-                    <span className="text-foreground font-medium">{member.plano} {member.plano === 1 ? "mês" : "meses"}</span>
-                  </div>
-                )}
+          <Card className="p-6 border-none shadow-xl bg-white/90">
+            <h3 className="font-black uppercase italic text-secondary mb-4 flex items-center gap-2 border-b pb-2">
+              <User className="w-4 h-4 text-secondary" /> Informações
+            </h3>
+            <div className="space-y-4 text-sm">
+              <div className="flex flex-col">
+                <span className="text-slate-400 font-bold uppercase text-[9px]">CPF</span>
+                <span className="font-bold text-secondary">{socio.cpf}</span>
               </div>
+              <div className="flex flex-col">
+                <span className="text-slate-400 font-bold uppercase text-[9px]">Nascimento</span>
+                <span className="font-bold text-secondary">04/04/2005</span>
+              </div>
+              <button className="w-full py-3 rounded-xl bg-slate-100 text-secondary font-black text-[10px] uppercase hover:bg-slate-200 transition-colors mt-2">
+                Solicitar alteração
+              </button>
+            </div>
+          </Card>
+        </div>
+
+        {/* COLUNA DIREITA */}
+        <div className="lg:col-span-2 space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <button className="flex items-center justify-between p-6 bg-secondary text-white rounded-2xl shadow-xl hover:translate-y-[-4px] transition-all group">
+              <div className="flex items-center gap-4">
+                <div className="bg-white/10 p-3 rounded-xl">
+                  <MessageCircle className="w-6 h-6 text-white" />
+                </div>
+                <div className="text-left">
+                  <p className="font-black uppercase italic leading-none">Comunidade M23</p>
+                  <p className="text-[10px] text-white/50 uppercase mt-1">Acessar WhatsApp</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-white/30" />
+            </button>
+
+            <button className="flex items-center justify-between p-6 bg-white text-secondary rounded-2xl shadow-xl border border-slate-100 hover:translate-y-[-4px] transition-all group">
+              <div className="flex items-center gap-4">
+                <div className="bg-secondary/5 p-3 rounded-xl">
+                  <Download className="w-6 h-6 text-secondary" />
+                </div>
+                <div className="text-left">
+                  <p className="font-black uppercase italic leading-none">Downloads</p>
+                  <p className="text-[10px] text-slate-400 uppercase mt-1">Kit Digital do Sócio</p>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-secondary/30" />
+            </button>
+          </div>
+
+          {/* MURAL DE NOVIDADES */}
+          <div className="space-y-6 mt-8">
+            <h3 className="text-xl font-black uppercase italic text-secondary flex items-center gap-2">
+               <Calendar className="text-secondary w-6 h-6" /> Notícias e Avisos
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card className="group overflow-hidden border-none shadow-2xl cursor-pointer bg-white">
+                <div className="relative overflow-hidden aspect-video flex items-center justify-center bg-slate-100">
+                  {/* Usando a variável importada */}
+                  <img 
+                    src={camisetaImg} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    alt="Nova Camiseta"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <Badge className="bg-white text-secondary font-black italic uppercase text-[9px] shadow-md">Loja Oficial</Badge>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h4 className="font-black uppercase italic text-secondary leading-tight mb-2 group-hover:text-blue-600 transition-colors">Nova Camiseta Movimento 23</h4>
+                  <p className="text-[11px] text-slate-500 font-medium">Garanta já a camiseta oficial do Movimento 23 por apenas R$70,00!</p>
+                </div>
+              </Card>
+
+              <Card className="group overflow-hidden border-none shadow-2xl cursor-pointer bg-white">
+                <div className="relative overflow-hidden aspect-video flex items-center justify-center bg-slate-100">
+                  {/* Usando a variável importada */}
+                  <img 
+                    src={logoImg} 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                    alt="Assembleia"
+                  />
+                  <div className="absolute top-4 left-4">
+                    <Badge className="bg-secondary text-white font-black italic uppercase text-[9px] shadow-md">Institucional</Badge>
+                  </div>
+                </div>
+                <div className="p-5">
+                  <h4 className="font-black uppercase italic text-secondary leading-tight mb-2 group-hover:text-blue-600 transition-colors">Assembleia Geral dos Membros</h4>
+                  <p className="text-[11px] text-slate-500 font-medium">Participe da próxima assembleia e tenha voz na torcida.</p>
+                </div>
+              </Card>
             </div>
           </div>
-
-          {/* News */}
-          <h2 className="font-display text-2xl uppercase mb-6 text-foreground flex items-center gap-2">
-            <CalendarDays className="h-6 w-6 text-secondary" /> Notícias e Novidades
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {news.map((n, i) => (
-              <motion.div
-                key={n.title}
-                className="bg-card rounded-lg overflow-hidden blue-glow hover:scale-105 transition-transform"
-                initial={{ y: 30, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: i * 0.1 }}
-                viewport={{ once: true }}
-              >
-                {n.image && (
-                  <img src={n.image} alt={n.title} className="w-full h-48 object-cover" />
-                )}
-                {!n.image && (
-                  <div className="w-full h-48 hero-gradient flex items-center justify-center">
-                    <img src={logo} alt="Movimento 23" className="h-20 w-20 opacity-30" />
-                  </div>
-                )}
-                <div className="p-4">
-                  <h4 className="font-display text-lg font-bold uppercase mb-2 text-foreground">{n.title}</h4>
-                  <p className="text-muted-foreground text-sm">{n.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   );
